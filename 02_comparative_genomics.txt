@@ -1,0 +1,15 @@
+#Comparative genomics were done using pyPGCF pipeline. This package were installed by the following command:
+mamba install -c mnikolaidis -c conda-forge -c bioconda pypgcf==0.1.3
+
+
+#species demarcation module was used with the genomic fasta sequences as input
+pyPGCF species_demarcation -in genomic/ -o comparative_analyses/ --fastani_cores 4
+
+#Ortholouges module was used with protein sequences as input, and J. lividum (GCF_013372045.1) as reference, output of this was a .csv file called OGmatrix.csv
+pyPGCF orthologues -in protein/ -o comparative_analyses/ -ref GCF_013372045
+
+#Used the orthologues to find the core genes
+pyPGCF core -in Orthologues/GCF_013372045/OGmatrix.csv -o .
+
+#To construct the phylogenomic tree the phylogenomic function was used
+pyPGCF phylogenomic -in ./comparative_analyses/Orthologues/GCF_013372045/OGmatrix.csv \ -fasta_dir ./protein/ -o comparative_analyses/  --cores 3

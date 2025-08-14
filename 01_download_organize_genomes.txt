@@ -1,0 +1,8 @@
+#Make sure to have ncbi datasets and biopyhton installed
+
+
+#Download genome and protein sequences for janthinobacterium strains based on the Refseq numbers in janthinobacterium_genome_list.txt
+datasets download genome accession –include genome, protein –inputfile janthinobacterium_genome_list.txt
+
+#organize genome and protein sequences 
+python file_organizer.py ncbi_dataset/ .
