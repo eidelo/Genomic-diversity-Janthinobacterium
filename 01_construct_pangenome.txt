@@ -1,0 +1,66 @@
+#Install Anvi'o and it's dependencies 
+#Put the .fa files of the janthinobacterium genomes into the working directory
+#Make a textfile with all the genome-names
+ls *fa | awk 'BEGIN{FS="_"}{print $1}' > genomes.txt
+
+#Simplify the names of the contigs
+for g in `cat genomes.txt`
+do
+    echo
+    echo "Working on $g ..."
+    echo
+    anvi-script-reformat-fasta ${g}_J.fa \
+                               --simplify-names \
+                               -o ${g}_f.fa
+done
+
+#Create a contig database
+for g in `cat genomes.txt`
+do
+    echo
+    echo "Working on $g ..."
+    echo
+    anvi-gen-contigs-database -f ${g}_J.fa \
+                              -o J_${g}.db \
+                              --num-threads 4 \
+                              -n J_${g}
+done
+
+#Annotating contigs databases
+for g in *.db
+do
+    anvi-run-hmms -c $g --num-threads 4
+    anvi-run-ncbi-cogs -c $g --num-threads 4
+    anvi-scan-trnas -c $g --num-threads 4
+    anvi-run-scg-taxonomy -c $g --num-threads 4
+done
+
+
+
+#Creating an external genomes file
+anvi-script-gen-genomes-file --input-dir . \
+                             -o external-genomes.txt
+
+#Investigating contamination
+anvi-estimate-genome-completeness -e external-genomes.txt
+
+#Generate genomes storage - merges contigs databases
+anvi-gen-genomes-storage -e external-genomes.txt \
+                         -o Janthinobacterium-GENOMES.db
+
+#computes the pangenome
+anvi-pan-genome -g Janthinobacterium-GENOMES.db \
+                --project-name Janthinobacterium \
+                --num-threads 4
+
+#Visualize the pangenome
+anvi-display-pan -p Janthinobacterium/Janthinobacterium-PAN.db \
+                 -g Janthinobacterium-GENOMES.db
+#open localhost:8080 in google chrome
+
+
+#Summarizing the pangenome based on the bins made for singletons, core-genes and the shell genes
+anvi-summarize -g Janthinobacterium-GENOMES.db \
+               -p Janthinobacterium/Janthinobacterium-PAN.db \
+               -C Singletons_core_shell
+	       -o Singletons_core_shell-summary
