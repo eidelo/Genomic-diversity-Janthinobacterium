@@ -1,8 +1,6 @@
 from pathlib import Path
 import argparse
 from tqdm import tqdm
-from Bio import SeqIO
-from typing import List
 
 def rm_tree(pth: Path):
     for child in pth.iterdir():
@@ -32,7 +30,7 @@ subdirs = [subdir for subdir in data_dir.glob("*") if subdir.is_dir()]
 
 # Create output directories and organize
 outdir.mkdir(exist_ok=True)
-file_types = ["protein"]
+file_types = ["protein", "genomic"]
 for subdir in tqdm(subdirs, desc="Organizing files"):
     input_files = subdir.glob("*")
     assembly = subdir.stem
@@ -49,14 +47,3 @@ for subdir in tqdm(subdirs, desc="Organizing files"):
 rm_tree(indir)
 readme_file = outdir / "README.md"
 readme_file.unlink()
-
-files = list(file_type_dir.glob("*"))
-for f in tqdm(files, desc="Renaming proteins for downstream analysis"):
-    data = []
-    parser = SeqIO.parse(f, "fasta")
-    gcf = f.stem
-    for record in parser:
-        record.id = record.id + "-" + gcf
-        record.description = ""
-        data.append(record)
-    SeqIO.write(data, f, "fasta")
