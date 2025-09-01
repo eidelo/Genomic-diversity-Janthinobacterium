@@ -1,0 +1,2 @@
+#Run vsearch with the fasta file containing the Janthinobacterium 16s sequences as input
+ vsearch --allpairs_global 16s_sequences.fas --acceptall --uc allpairs.uc --blast6out allpairs.tsv --iddef 2
