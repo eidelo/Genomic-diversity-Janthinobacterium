@@ -3,3 +3,4 @@ The scripts within 01_construct_pangenome.txt is used to construct pangenomes. T
 
 The script 01_download_organize_genomes.txt is used to download and organize protein and DNA-files of the genomes listed in janthinobacterium_genome_list.txt. These codes uses file_organizer.py to organize the protein and genome files.
 The scripts in 02_comparative_genomics.txt is used to do comparative genomic analyses, and construct a phylogenetic tree based on core genes of the _Janthinobacterium_ genomes. 
+The script All-vs-all_alignment_16s was used to align a list of _Janthinobacterium_ 16s rRNA sequences against eachother
